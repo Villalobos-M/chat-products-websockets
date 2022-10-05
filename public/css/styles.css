@@ -1,0 +1,72 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: antiquewhite;
+}
+
+.formContenedor {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40vh;
+}
+.formProductos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border: 2px solid black;
+}
+
+h2{
+    color: rgba(102, 49, 138, 0.842);
+    text-align: center;
+    margin: 2rem 0 !important;
+}
+.labelContenedor {
+  padding: 10px;
+  margin: 10px;
+}
+h3{
+  text-align: center;
+}
+
+.labelContenedor label,
+input {
+  font-size: 1.5rem;
+}
+
+#layout {
+  display: flex;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  margin: 2rem;
+  padding: 1rem;
+}
+
+.mail, .id {
+  color: blue;
+  font-size: 18px;
+}
+.date {
+  color: red;
+  font-size: 15px;
+}
+.msj {
+  color: green;
+  font-size: 18px;
+  font-style: italic;
+}
+form > button{
+  background-color: rgba(155, 128, 228, 0.432);
+  border: 1px solid rgba(169, 169, 169, 0.466);
+  border-radius: 10px;
+  padding: 5px 1rem;
+}

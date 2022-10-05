@@ -1,0 +1,41 @@
+<style>
+  .tablaConteiner {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   width: 100%;
+   min-height: 50vh;
+   padding: 0 6rem;
+ }
+</style>
+
+{{#if productos.length}}
+  <div class="tablaConteiner">
+    <h3>Lista de Productos</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Foto</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each productos}}
+          <tr>
+            <td>{{this.producto}}</td>
+            <td>${{this.precio}}</td>
+            <td><img width="50" src={{this.url}} alt="not found" /></td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+{{else}}
+  <div class="noProd">
+    <h4>Por el momento no existe ningun producto cargado, por favor carga un
+      producto.</h4>
+
+  </div>
+{{/if}}
