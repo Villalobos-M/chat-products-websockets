@@ -11,6 +11,9 @@ socket.on("productos", (products) => {
       layout.innerHTML = html;
    });
 });
+socket.on("viewProducts", (products) => {
+   render(products);
+});
 
 const sendProduct = (e) => {
   const newProduct = {
@@ -30,12 +33,14 @@ const hbsTamplateFn = (productos) => {
     .then((plantilla) => {
       const template = Handlebars.compile(plantilla);  
       const html = template({ productos }); 
+      console.log(productos);
       return html;
     });
 };
 
 
-// MESSAGES
+// // MESSAGES
+
 
 const mensaje = document.getElementById("mensaje");
 const email = document.getElementById("email");
@@ -43,30 +48,28 @@ const layoutMsj = document.getElementById("layoutMensajes");
 
 // D) volvemos a escuchar el mensaje del servidor y volvemos a pintar el html
 socket.on("mensajes", (message) => {
-  render(message);
+   render(message);
 });
 
 const sendMessage = (e) => {
-  const newMessage = {
-    email: email.value,
-    mensaje: mensaje.value,
-  };
+   const newMessage = {
+      email: email.value,
+      message: mensaje.value,
+   };
 
-  
-  socket.emit("newMessage", newMessage);
-    console.log(newMessage);
-  return false;
+   socket.emit("newMessage", newMessage);
+   console.log(newMessage);
+   return false;
 };
 
 const render = (mensajes) => {
-  const html = mensajes.map((msj) => {
-    return `<div class='card'>
-      
+   const html = mensajes.map((msj) => {
+      return `<div class='card'>
       <p class='mensajeEntero'> 
       <strong class='mail'>${msj.email}</strong> 
-      <span class='date'>(${msj.time}):</span> 
-      <span class='msj'>${msj.mensaje}</span> </p>
+      <span class='date'>(${msj.timestamp}):</span> 
+      <span class='msj'>${msj.message}</span> </p>
       </div>`;
-  });
-  layoutMsj.innerHTML = html.join(" ");
+   });
+   layoutMsj.innerHTML = html.join(" ");
 };

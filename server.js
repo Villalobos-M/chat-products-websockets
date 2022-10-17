@@ -1,10 +1,8 @@
 const express = require("express");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
-const {Products} = require("./modules/classProducts");
-const {Messages} = require("./modules/classMessage");
 
-//=================================== Codificando el servidor
+//Servidor
 const app = express();
 const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
@@ -13,32 +11,42 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const productosApi = new Products();
-const mensajesApi = new Messages();
 
-console.clear();
 
-//=================================== Configuración Socket
+//* CONTENEDORES PARA ACCESO A DB's
+const {optionsMariaDB, optionsSqlite} = require('./options_db')
+const {Contenedor} = require('./modules/classContenedor')
+
+const contenedorProductos = new Contenedor("products", optionsMariaDB);
+const contenedorMensajes = new Contenedor("messages", optionsSqlite);
+
+
+//Socket
 
 io.on("connection", async (client) => {
+   let a = await contenedorProductos.getAllData();
    console.log("New user connected!");
-   client.emit("productos", productosApi.getAllProducts());
+   client.emit("productos", a);
    client.on("newProduct", (product) => {
-      productosApi.postProduct(product);
-      io.sockets.emit("productos", productosApi.getAllProducts());
-   });
+      contenedorProductos.postData(product);
+      io.sockets.emit("viewProducts", contenedorProductos.getAllData());
 
-   client.emit("mensajes", mensajesApi.getAllMessage());
+      
+   });
+   
+   contenedorMensajes.getAllData().then((response) => {
+      client.emit("mensajes", response);
+   });
    client.on("newMessage", async (newMessage) => {
-      newMessage.time = new Date().toLocaleString();
-      await mensajesApi.postMessage(newMessage);
-      io.sockets.emit("mensajes", mensajesApi.getAllMessage());
+      newMessage.timestamp = new Date().toLocaleString();
+      await contenedorMensajes.postData(newMessage);
+      io.sockets.emit("mensajes", contenedorMensajes.getAllData());
    });
 });
 
-//=================================== Instanciando server
+//Iniciando server
 const PORT = 8080;
 const server = httpServer.listen(PORT, () => {
-   console.log("All OK, Listening on port" + PORT);
+   console.log("Running Server, listening on port " + PORT);
 });
 server.on("error", (error) => console.log(`Error en servidor ${error}`));
