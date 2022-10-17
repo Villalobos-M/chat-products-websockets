@@ -13,27 +13,25 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
-//* CONTENEDORES PARA ACCESO A DB's
 const {optionsMariaDB, optionsSqlite} = require('./options_db')
 const {Contenedor} = require('./modules/classContenedor')
 
+// Instancias de contenedores de bases de datos
 const contenedorProductos = new Contenedor("products", optionsMariaDB);
 const contenedorMensajes = new Contenedor("messages", optionsSqlite);
 
 
-//Socket
-
+//Sockets de productos
 io.on("connection", async (client) => {
    let a = await contenedorProductos.getAllData();
    console.log("New user connected!");
    client.emit("productos", a);
    client.on("newProduct", (product) => {
       contenedorProductos.postData(product);
-      io.sockets.emit("viewProducts", contenedorProductos.getAllData());
-
-      
+      io.sockets.emit("viewProducts", contenedorProductos.getAllData());  
    });
    
+   //Sockets de mensajes
    contenedorMensajes.getAllData().then((response) => {
       client.emit("mensajes", response);
    });

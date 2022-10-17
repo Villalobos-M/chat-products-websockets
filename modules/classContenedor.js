@@ -4,8 +4,8 @@ class Contenedor {
       this.knex = require("knex")(options);
    }
 
+   //Extrae la tabla completa
    async getAllData() {
-      //? Devuelve la tabla completa
       let data = [];
       try {
           data = this.knex.from(this.nombreTabla).select("*");
@@ -15,10 +15,10 @@ class Contenedor {
       return data;
    }
 
-   async postData(obj) {
-      //? Guarda un objeto en la base de datos
+   //Guarda un objeto en la base de datos
+   async postData(data) {
       this.knex(this.nombreTabla)
-         .insert(obj)
+         .insert(data)
          .then(() => console.log("data inserted"));
    }
 }
