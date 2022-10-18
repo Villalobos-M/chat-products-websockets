@@ -1,7 +1,8 @@
 const express = require("express");
+
+//Websockets
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
-
 //Servidor
 const app = express();
 const httpServer = new HttpServer(app);
@@ -11,8 +12,7 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-
+//importacion de las configuraciones de bases de datos
 const {optionsMariaDB, optionsSqlite} = require('./options_db')
 const {Contenedor} = require('./modules/classContenedor')
 
@@ -20,6 +20,23 @@ const {Contenedor} = require('./modules/classContenedor')
 const contenedorProductos = new Contenedor("products", optionsMariaDB);
 const contenedorMensajes = new Contenedor("messages", optionsSqlite);
 
+// Create table 'products'
+const knex = require("knex")(optionsMariaDB);
+knex.schema
+  .createTable("products", (table) => {
+   table.increments("id");
+   table.string("producto");
+   table.string("precio");
+   table.string("url");
+  })
+  .then(() => console.log("Table created"))
+  .catch((err) => {
+   console.log(err);
+   throw err;
+  })
+  .finally(() => {
+   knex.destroy();
+  });
 
 //Sockets de productos
 io.on("connection", async (client) => {

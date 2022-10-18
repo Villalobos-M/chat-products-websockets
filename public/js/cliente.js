@@ -33,7 +33,6 @@ const hbsTamplateFn = (productos) => {
     .then((plantilla) => {
       const template = Handlebars.compile(plantilla);  
       const html = template({ productos }); 
-      console.log(productos);
       return html;
     });
 };
